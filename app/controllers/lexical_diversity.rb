@@ -25,7 +25,6 @@ class LexicalDiversity
 
       current_ttr = current_types / current_tokens
 
-      puts "word: #{element}     current_ttr: #{current_ttr}       factors: #{factors}"
       if current_ttr < ttr_threshold
         factors += 1
         current_ttr = 0.0
@@ -45,19 +44,13 @@ class LexicalDiversity
 
   def hdd(text)
     token_array = clean_text(text)
-    type_array = []
     hdd_value = 0.0
 
-    token_array.each do |element|
-      unless type_array.include?(element)
-        type_array << element
-      end
-    end
+    type_array = create_type_array(token_array)
 
     type_array.each do |element|
       contribution = 1.0 - hypergeometric(token_array.size, 40.0, token_array.count(element), 0.0)
       contribution = contribution / 40.0
-      puts "#{element}      contribution: #{contribution}"
       hdd_value += contribution
     end
 
@@ -88,10 +81,39 @@ class LexicalDiversity
     end
   end
 
+  def yules_i(text)
+    token_array = clean_text(text)
+
+    type_array = create_type_array(token_array)
+
+    m1 = token_array.size
+    m2 = 0.0
+    freq_array = Array.new(type_array.size / 2.0, 0.0)
+
+    type_array.each do |element|
+      freq_array[token_array.count(element)] += 1.0
+    end
+
+    freq_array.each_with_index do |element, index|
+      m2 += (element * (index ** 2))
+    end
+
+    (m1 * m1) / (m2 - m1)
+  end
+
   def clean_text(text)
     new_text = text.gsub(/[^a-z0-9 ]/i, '')
     new_text = new_text.downcase
     new_text.split
   end
 
+  def create_type_array(token_array)
+    type_array = []
+    token_array.each do |element|
+      unless type_array.include?(element)
+        type_array << element
+      end
+    end
+    type_array
+  end
 end

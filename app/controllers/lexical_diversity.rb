@@ -40,15 +40,15 @@ class LexicalDiversity
     text_array.size / factors
   end
 
-  def hdd(text)
+  def hdd(text, sample_size=40.0)
     token_array = clean_text(text)
     hdd_value = 0.0
 
     type_array = create_type_array(token_array)
 
     type_array.each do |element|
-      contribution = 1.0 - hypergeometric(token_array.size, 40.0, token_array.count(element), 0.0)
-      contribution = contribution / 40.0
+      contribution = 1.0 - hypergeometric(token_array.size, sample_size, token_array.count(element), 0.0)
+      contribution = contribution / sample_size
       hdd_value += contribution
     end
 

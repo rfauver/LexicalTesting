@@ -5,8 +5,7 @@ class LexicalDiversity
 
     val1 = mtld_eval(text_array, ttr_threshold)
     val2 = mtld_eval(text_array.reverse, ttr_threshold)
-    val1
-    #(val1 + val2) / 2
+    (val1 + val2) / 2.0
   end
 
   def mtld_eval(text_array, ttr_threshold)
@@ -37,7 +36,6 @@ class LexicalDiversity
     excess = 1.0 - current_ttr
     excess_val = 1.0 - ttr_threshold
     factors += excess / excess_val
-    puts factors
 
     text_array.size / factors
   end
@@ -70,7 +68,6 @@ class LexicalDiversity
       i -= 1
     end
     numerator / factorial(k)
-    #factorial(n) / (factorial(k) * factorial(n - k))
   end
 
   def factorial(n)

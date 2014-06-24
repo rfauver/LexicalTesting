@@ -1,6 +1,5 @@
 a = function (text) {
 
-
   var mtld = function (args) {
     var text = args["text"];
     var ttr_threshold = "ttr_threshold" in args ? args["ttr_threshold"] : 0.72;
@@ -60,5 +59,69 @@ a = function (text) {
       emit(this._id, mtld({'text': text}));
 
     }
+  }
+}
+
+b = function (text) {
+
+  var hdd = function (args) {
+    var text = args["text"];
+    var sample_size = "sample_size" in args ? args["sample_size"] : 40.0;
+    var token_arrray = clean_text(text);
+    
+    var hdd_value = 0.0;
+
+    var type_array = create_type_array(token_arrray);
+
+    for (var i = 0; i < type_array.length; i++) {
+      var count = 0;
+      for (var j = 0; j < token_arrray.length; j++) {
+        if type_array[i] = token_arrray[j]{
+          count++;
+        }
+      }
+      var contribution = 1.0 - hypergeometric(token_arrray.length, sample_size, count, 0.0);
+      contribution = contribution / sample_size;
+      hdd_value += contribution;
+    }
+    return hdd_value;
+  }
+
+  var hypergeometric = function (population, sample, pop_successes, samp_successes) {
+    var mk = combination(pop_successes, samp_successes);
+    var Nmnk = combination(population - pop_successes, sample - samp_successes);
+    return (mk * Nmnk) / combination(population, sample);
+  }
+
+  var combination = function (n, k) {
+    var i = n;
+    var numerator = 1;
+    while (i > (n - k)) {
+      numerator *= i;
+      i -= 1;
+    }
+    return numerator / factorial(k);
+  }
+
+  var factorial = function (n) {
+    if (n <= 1) {
+      return 1;
+    }
+    return (n * factorial(n - 1));
+  }
+
+  var clean_text = function (text) {
+    var new_text = text.replace(/[^\w\s\d]/gi, '');
+    return new_text.toLowerCase().match(/[a-z0-9]+/gi);
+  }
+
+  var create_type_array = function (token_arrray) {
+    var type_array = [];
+    for (var i = 0; i < token_arrray.length; i++) {
+      if (type_array.indexOf(token_arrray[i]) == -1) {
+        type_array.push(token_arrray[i]);
+      }
+    }
+    return type_array;
   }
 }

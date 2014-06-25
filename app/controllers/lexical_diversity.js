@@ -76,12 +76,12 @@ b = function (text) {
     for (var i = 0; i < type_array.length; i++) {
       var count = 0;
       for (var j = 0; j < token_arrray.length; j++) {
-        if type_array[i] = token_arrray[j]{
+        if (type_array[i] == token_arrray[j]) {
           count++;
         }
       }
       var contribution = 1.0 - hypergeometric(token_arrray.length, sample_size, count, 0.0);
-      contribution = contribution / sample_size;
+      contribution /= sample_size;
       hdd_value += contribution;
     }
     return hdd_value;
@@ -124,4 +124,55 @@ b = function (text) {
     }
     return type_array;
   }
+
+  var args = [];
+  args['text'] = text;
+  return hdd(args);
 }
+
+c = function (text) {
+
+  var yules_i = function (text) {
+    var token_arrray = clean_text(text);
+    var type_array = create_type_array(token_arrray);
+
+    var m1 = token_arrray.length;
+    var m2 = 0.0;
+    var new_arr_length = parseInt(type_array.length/2);
+    var freq_array = Array.apply(null, new Array(new_arr_length)).map(Number.prototype.valueOf,0);
+
+    for (var i = 0; i < type_array.length; i++) {
+      var count = 0;
+      for (var j = 0; j < token_arrray.length; j++) {
+        if (type_array[i] == token_arrray[j]) {
+          count++;
+        }
+      }
+      freq_array[count] += 1;
+    }
+
+    for (var i = 0; i < freq_array.length; i++) {
+      m2 += (freq_array[i] * (i * i));
+    }
+    return (m1 * m1) / (m2 - m1);
+  }
+
+  var clean_text = function (text) {
+    var new_text = text.replace(/[^\w\s\d]/gi, '');
+    return new_text.toLowerCase().match(/[a-z0-9]+/gi);
+  }
+
+  var create_type_array = function (token_arrray) {
+    var type_array = [];
+    for (var i = 0; i < token_arrray.length; i++) {
+      if (type_array.indexOf(token_arrray[i]) == -1) {
+        type_array.push(token_arrray[i]);
+      }
+    }
+    return type_array;
+  }
+
+  return yules_i(text);
+}
+
+

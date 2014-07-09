@@ -1,11 +1,15 @@
 class LexicalDiversity
 
+  def lex_d(text, mtld_ttr_threshold=0.72, hdd_sample_size=40.0)
+    (mtld(text, mtld_ttr_threshold) + hdd(text, hdd_sample_size) + yules_i(text)) / 3
+  end
+
   def mtld(text, ttr_threshold=0.72)
     text_array = clean_text(text)
 
     val1 = mtld_eval(text_array, ttr_threshold)
     val2 = mtld_eval(text_array.reverse, ttr_threshold)
-    (val1 + val2) / 2.0
+    mtld_scale((val1 + val2) / 2.0)
   end
 
   def mtld_eval(text_array, ttr_threshold)
@@ -40,6 +44,10 @@ class LexicalDiversity
     text_array.size / factors
   end
 
+  def mtld_scale(mtld)
+    ((mtld - 99.284) * 0.5554 + 100)
+  end
+
   def hdd(text, sample_size=40.0)
     token_array = clean_text(text)
     hdd_value = 0.0
@@ -52,7 +60,7 @@ class LexicalDiversity
       hdd_value += contribution
     end
 
-    hdd_value
+    hdd_scale(hdd_value)
   end
 
   def hypergeometric(population, sample, pop_successes, samp_successes)
@@ -78,6 +86,10 @@ class LexicalDiversity
     end
   end
 
+  def hdd_scale(hdd)
+    ((hdd - 0.854) * 592.1052 + 100)
+  end
+
   def yules_i(text)
     token_array = clean_text(text)
 
@@ -96,7 +108,11 @@ class LexicalDiversity
       m2 += (element * (index ** 2))
     end
     return 0 if (m2 - m1) == 0
-    (m1 * m1) / (m2 - m1)
+    yules_scale((m1 * m1) / (m2 - m1))
+  end
+
+  def yules_scale(yules)
+    ((yules - 100.793) * 0.6818 + 100)
   end
 
   def clean_text(text)
@@ -104,7 +120,6 @@ class LexicalDiversity
     new_text = new_text.gsub(/&nbsp;/, ' ')
     new_text = new_text.gsub(/[^a-z0-9 ]/i, '')
     new_text = new_text.downcase
-    puts new_text
     new_text.split
   end
 

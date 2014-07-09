@@ -141,7 +141,7 @@ function () {
   }
 
   var yules_scale = function(yules) {
-    return ((yules - 100.793) * 0.6818 + 100)
+    return ((yules - 100.793) * 0.6818 + 100);
   }
 
   var create_type_array = function (token_arrray) {

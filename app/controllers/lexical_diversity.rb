@@ -63,7 +63,7 @@ class LexicalDiversity
     n_minus_k = n - k
     i = n
     numerator = 1
-    while i > n_minus_k do
+    while i > n_minus_k && i > 0 do
       numerator *= i
       i -= 1
     end
@@ -88,19 +88,23 @@ class LexicalDiversity
     freq_array = Array.new(type_array.size / 2.0, 0.0)
 
     type_array.each do |element|
+      return 0 if token_array.count(element) >= freq_array.size
       freq_array[token_array.count(element)] += 1.0
     end
 
     freq_array.each_with_index do |element, index|
       m2 += (element * (index ** 2))
     end
-
+    return 0 if (m2 - m1) == 0
     (m1 * m1) / (m2 - m1)
   end
 
   def clean_text(text)
-    new_text = text.gsub(/[^a-z0-9 ]/i, '')
+    new_text = text.gsub(/<(.|\n)*?>/, ' ')
+    new_text = new_text.gsub(/&nbsp;/, ' ')
+    new_text = new_text.gsub(/[^a-z0-9 ]/i, '')
     new_text = new_text.downcase
+    puts new_text
     new_text.split
   end
 

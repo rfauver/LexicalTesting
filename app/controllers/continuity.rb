@@ -43,6 +43,8 @@ class Continuity
     end
 
     # puts result_arr.inspect
+    puts ("min: #{result_arr.min}")
+    puts ("max: #{result_arr.max}")
     result_arr.reduce(:+) / result_arr.length
   end
 

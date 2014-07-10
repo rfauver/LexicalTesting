@@ -124,6 +124,7 @@ class LexicalDiversity
   def clean_text(text)
     new_text = text.gsub(/<(.|\n)*?>/, ' ')
     new_text = new_text.gsub(/&nbsp;/, ' ')
+    new_text = new_text.gsub(/\\n/, ' ')
     new_text = new_text.gsub(/[^a-z0-9 ]/i, '')
     new_text = new_text.downcase
     new_text.split

@@ -6,6 +6,8 @@ class Continuity
     sentence_arr.map! { |sentence| clean_text(sentence) }
     sentence_arr.delete([])
 
+    return 0 if sentence_arr.length < 2
+
     result_arr = Array.new(sentence_arr.length - 1)
     sentence_arr.each_index do |i|
       unless i == sentence_arr.length - 1
@@ -42,24 +44,22 @@ class Continuity
       end
     end
 
-    # puts result_arr.inspect
-    puts ("min: #{result_arr.min}")
-    puts ("max: #{result_arr.max}")
     result_arr.reduce(:+) / result_arr.length
   end
 
   def clean_text(text)
-    new_text = text.gsub(/[^a-z0-9 ]/i, '')
+    new_text = text.gsub(/<(.|\n)*?>/, ' ')
+    new_text = new_text.gsub(/&nbsp;/, ' ')
+    new_text = new_text.gsub(/\\n/, ' ')
+    new_text = new_text.gsub(/[^a-z0-9 ]/i, '')
     new_text = new_text.downcase
     new_text.split
   end
 
   def normalize!(vector)
-    # puts vector.inspect
     length = 0
     vector.each { |element| length += element * element }
     length = Math.sqrt(length)
-    # puts length
     vector.map! { |element| element / length }
     vector
   end

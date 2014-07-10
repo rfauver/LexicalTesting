@@ -1,15 +1,17 @@
-a = function (text) {
+function () {
 
   var cos_sim = function (text) {
-    var sentence_arr = text.match(/[^.]+/gi);
+    var sentence_arr = text.match(/[^.!?]+/gi);
 
     sentence_arr = sentence_arr.map(clean_text);
 
     for (var i = sentence_arr.length-1; i >= 0; i--) {
-      if (sentence_arr[i] === []) {
+      if (sentence_arr[i] === [] || sentence_arr[i] === null) {
           sentence_arr.splice(i, 1);
       }
     }
+
+    if (sentence_arr.length < 2) { return 0; }
 
     var result_arr = new Array(sentence_arr.length - 1)
 
@@ -17,7 +19,7 @@ a = function (text) {
       if (i !== sentence_arr.length - 1) {
         var sentence1 = sentence_arr[i];
         var sentence2 = sentence_arr[i+1];
-
+        
         var type_array = [];
 
         for (var j = 0; j < sentence1.length; j++) {
@@ -81,9 +83,24 @@ a = function (text) {
   }
 
   var clean_text = function (text) {
-    var new_text = text.replace(/[^\w\s\d]/gi, '');
+    var html_strip = /<(.|\n)*?>/;
+    var new_text = text;
+    while (html_strip.test(new_text)) {
+      new_text = new_text.replace(html_strip, ' ');
+    }
+    new_text = new_text.replace(/&nbsp;/g, ' ');
+    new_text = new_text.replace(/\\n/g, ' ');
+    new_text = new_text.replace(/[^\w\s\d]/gi, '');
     return new_text.toLowerCase().match(/[a-z0-9]+/gi);
   }
 
-  return cos_sim(text);
+  if (this.revs && this.revs.length > 0){
+    var last = this.revs.length - 1 ;
+    if (this.revs[last].length > 1 && this.revs[last][1].length > 0){
+      var doc = this.revs[last][1];
+      //if (clean_text(doc) !== null) {
+        emit(this._id, cos_sim(doc));
+      //}
+    }
+  }
 }

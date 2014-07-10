@@ -14,7 +14,7 @@ function () {
     var text = args["text"];
     var ttr_threshold = "ttr_threshold" in args ? args["ttr_threshold"] : 0.72;
     var text_array = clean_text(text);
-    if (text_array === null) { return 0; }
+    if (text_array === null) { return mtld_scale(0); }
 
     var val1 = mtld_eval(text_array, ttr_threshold);
     var val2 = mtld_eval(text_array.reverse(), ttr_threshold);
@@ -65,7 +65,7 @@ function () {
     var text = args["text"];
     var sample_size = "sample_size" in args ? args["sample_size"] : 40.0;
     var token_arrray = clean_text(text);
-    if (token_arrray === null) { return 0; }
+    if (token_arrray === null) { return hdd_scale(0); }
     
     var hdd_value = 0.0;
 
@@ -114,7 +114,7 @@ function () {
 
   var yules_i = function (text) {
     var token_arrray = clean_text(text);
-    if (token_arrray === null) { return 0; }
+    if (token_arrray === null) { return yules_scale(0); }
     var type_array = create_type_array(token_arrray);
 
     var m1 = token_arrray.length;
@@ -136,12 +136,12 @@ function () {
     for (var i = 0; i < freq_array.length; i++) {
       m2 += (freq_array[i] * (i * i));
     }
-    if ((m2 - m1) === 0) { return 0 }
+    if ((m2 - m1) === 0) { return yules_scale(0); }
     return yules_scale((m1 * m1) / (m2 - m1));
   }
 
   var yules_scale = function(yules) {
-    return ((yules - 100.793) * 0.6818 + 100);
+    return ((yules - 100.793) * 0.6818 + 100)
   }
 
   var create_type_array = function (token_arrray) {
@@ -170,12 +170,10 @@ function () {
     var last = this.revs.length - 1 ;
     if (this.revs[last].length > 1 && this.revs[last][1].length > 0){
       var doc = this.revs[last][1];
-      if (clean_text(doc) !== null) {
-        //emit(this._id, mtld({'text': doc}));
-        //emit(this._id, hdd({'text': doc}));
-        //emit(this._id, yules_i(doc));
-        emit(this._id, lex_d({'text': doc}));
-      }
+      //emit(this._id, mtld({'text': doc}));
+      //emit(this._id, hdd({'text': doc}));
+      //emit(this._id, yules_i(doc));
+      emit(this._id, lex_d({'text': doc}));
     }
   }
 }

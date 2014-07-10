@@ -1,11 +1,15 @@
 class LexicalDiversity
 
   def lex_d(text, mtld_ttr_threshold=0.72, hdd_sample_size=40.0)
+    # puts mtld(text, mtld_ttr_threshold)
+    # puts hdd(text, hdd_sample_size)
+    # puts yules_i(text)
     (mtld(text, mtld_ttr_threshold) + hdd(text, hdd_sample_size) + yules_i(text)) / 3
   end
 
   def mtld(text, ttr_threshold=0.72)
     text_array = clean_text(text)
+    return 0 if text_array.empty?
 
     val1 = mtld_eval(text_array, ttr_threshold)
     val2 = mtld_eval(text_array.reverse, ttr_threshold)
@@ -50,6 +54,7 @@ class LexicalDiversity
 
   def hdd(text, sample_size=40.0)
     token_array = clean_text(text)
+    return 0 if token_array.empty?
     hdd_value = 0.0
 
     type_array = create_type_array(token_array)
@@ -92,6 +97,7 @@ class LexicalDiversity
 
   def yules_i(text)
     token_array = clean_text(text)
+    return 0 if token_array.empty?
 
     type_array = create_type_array(token_array)
 
